@@ -12,9 +12,9 @@
 using namespace std;
 
 // Function prototypes
-vector<uint32_t> map (vector<string>  inStrings, uint32_t (*func) (string));
+vector<uint32_t> *map (vector<string> &inStrings, uint32_t (*func) (string));
 uint32_t mapFunc (string inString);
-uint32_t reduce (vector<uint32_t> lengthValues, uint32_t reduceFunc (uint32_t, uint32_t));
+uint32_t reduce (vector<uint32_t> &lengthValues, uint32_t reduceFunc (uint32_t, uint32_t));
 uint32_t reduceFunc (uint32_t val1, uint32_t val2);
 
 int main(int argc, char *argv[])
@@ -49,24 +49,27 @@ int main(int argc, char *argv[])
 	cout << "Total of " << words.size() << " words read from " << argv[1] << endl;
 
 	// Call the map function for the vector of words just read in
-	vector<uint32_t> lengthValues = map (words, mapFunc);
+	vector<uint32_t> *lengthValues = map (words, mapFunc);
 
 	// Now call the reduce function for the vector of lengths
-	uint32_t totalLength = reduce (lengthValues, reduceFunc);
+	uint32_t totalLength = reduce (*lengthValues, reduceFunc);
 
 	// Display the weighed average length of the words.
-	cout << "Weighted average word length = " << (float) totalLength/lengthValues.size() << endl;
+	cout << "Weighted average word length = " << (float) totalLength/lengthValues->size() << endl;
+
+	// Delete the vector returned from map above
+	delete lengthValues;
 
     return 0;
 }
 
-vector<uint32_t> map (vector<string> inStrings, uint32_t (*func) (string))
+vector<uint32_t> *map (vector<string> &inStrings, uint32_t (*func) (string))
 {
-	vector<uint32_t> lengthValues;
+	vector<uint32_t> *lengthValues = new (vector<uint32_t>);
 	vector<string>::const_iterator str;
 	// iterate over the input string, call the provided function for each one
 	for (str=inStrings.begin(); str!= inStrings.end(); ++str)
-		lengthValues.push_back (func(*str));
+		lengthValues->push_back (func(*str));
 
 	return lengthValues;
 }
@@ -77,7 +80,7 @@ uint32_t mapFunc (string inString)
 	return length > 5 ? length*2 : length;
 }
 
-uint32_t reduce (vector<uint32_t> lengthValues, uint32_t reduceFunc (uint32_t, uint32_t))
+uint32_t reduce (vector<uint32_t> &lengthValues, uint32_t reduceFunc (uint32_t, uint32_t))
 {
 	uint32_t totalLength = 0;
 	vector<uint32_t>::const_iterator len;

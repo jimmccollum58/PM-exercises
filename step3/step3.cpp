@@ -33,13 +33,13 @@ private:
 	uint32_t totalLength;
 
 	// Function to create map of word lengths
-	static vector<uint32_t> map (vector<string>  inStrings, uint32_t (*func) (string))
+	static vector<uint32_t> *map (vector<string> &inStrings, uint32_t (*func) (string))
 	{
-		vector<uint32_t> lengthValues;
+		vector<uint32_t> *lengthValues = new (vector<uint32_t>);
 		vector<string>::const_iterator str;
 		// iterate over the input string, call the provided function for each one
 		for (str=inStrings.begin(); str!= inStrings.end(); ++str)
-			lengthValues.push_back (func(*str));
+			lengthValues->push_back (func(*str));
 
 		return lengthValues;
 	}
@@ -52,7 +52,7 @@ private:
 	}
 
 	// Function to return total weighted length of the words in the file
-	static uint32_t reduce (vector<uint32_t> lengthValues, uint32_t reduceFunc (uint32_t, uint32_t))
+	static uint32_t reduce (vector<uint32_t> &lengthValues, uint32_t reduceFunc (uint32_t, uint32_t))
 	{
 		uint32_t totalLength = 0;
 		vector<uint32_t>::const_iterator len;
@@ -94,13 +94,16 @@ private:
 			return &FILE_EMPTY;
 
 		// Call the map function for the vector of words just read in
-		vector<uint32_t> lengthValues = map (words, mapFunc);
+		vector<uint32_t> *lengthValues = map (words, mapFunc);
 
 		// Now call the reduce function for the vector of lengths
-		totalLength = reduce (lengthValues, reduceFunc);
+		totalLength = reduce (*lengthValues, reduceFunc);
 
 		// Calculate the weighed average length of the words.
-		weightedAverageLength = (float) totalLength/lengthValues.size();
+		weightedAverageLength = (float) totalLength/lengthValues->size();
+
+		// Delete the vector returned from map above
+		delete lengthValues;
 
 		return NULL;
 	}
