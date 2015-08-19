@@ -54,12 +54,10 @@ private:
 	// Function to return total weighted length of the words in the file
 	static uint32_t reduce (vector<uint32_t> &lengthValues, uint32_t reduceFunc (uint32_t, uint32_t))
 	{
-		uint32_t totalLength = 0;
-		vector<uint32_t>::const_iterator len;
+		uint32_t totalLength = lengthValues[0];
 
-		// iterate of the vector of lengths, calling the reduce function for each one
-		for (len=lengthValues.begin(); len!=lengthValues.end(); ++len)
-			totalLength = reduceFunc (totalLength, *len);
+		for (uint32_t i = 1; i < lengthValues.size(); ++i)
+			totalLength = reduceFunc (totalLength, lengthValues[i]);
 
 		return totalLength;
 	}
