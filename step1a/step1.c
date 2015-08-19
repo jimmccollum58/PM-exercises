@@ -58,7 +58,7 @@ uint32_t * map (void* arrayArg[], uint32_t arraySize, uint32_t (*func) (void *))
 	uint32_t i;
 
 	// Allocate space for the array to return from free space
-	uint32_t *retArray = (uint32_t *) malloc (arraySize * sizeof (void*));
+	uint32_t *retArray = (uint32_t *) malloc (arraySize * sizeof (uint32_t));
 
 	// Loop over the array passed in. For each element, call the transform function
 	// that was passed in and store its result in the array allocated from free space.
